@@ -1,0 +1,326 @@
+Question Description
+Problem Statement
+Booking.com uses a 3rd party provider in order to convert from the user's currency to the actual currency listed by the partner/hotel. For
+example, our user may use Euro while booking a hotel in GB, Booking.com will eventually pay in GBP to the partner.
+Our currency conversion provider only has a f
+currency conversion options available. We need to check if currency conversion is Rate
+possible from the partner's currency to the currency mentioned by the user or not.
+If the conversion is possible, we need to return the hotel price in the user's currency.		
+If the conversion is not possible, we need to return -1.
+Booking also charges a service fee to the users for every exchange conversion.
+Booking calculates service fee by charging X(variable input) for every vendor side transaction.
+If Booking does K vendor transactions for user exchange then service fee will be X*K of user currency. Calculate total price of conversion for the user.
+The service fee needs to be added to the price in	In	
+
+/**
+
+给定一个字符串 s,  里面包括 '('，')'，'{'，'}'，'['，']' ，判断字符串是否有效。
+
+
+
+
+
+有效字符串需满足：
+
+
+
+
+
+* 左括号必须用相同类型的右括号闭合。
+
+* 左括号必须以正确的顺序闭合。
+
+* {, [ ( 必须按照  先{,  再[, 再 (的顺序,   如果有 { 里面就必须有 [, 有[ 里面就必须有(
+
+
+
+
+
+示例 1：
+
+输入：s = "(a)"
+
+输出：true
+
+
+
+示例 2：
+
+输入：s = "a()[]{}"
+
+输出：false
+
+
+
+示例 3：
+
+输入：s = "{[(a)(b)]}"
+
+输出：true
+
+
+
+示例 4：
+
+输入：s = "{[]()]"
+
+输出：false
+
+
+
+示例 5：
+
+输入：s = "(a[b])"
+
+输出：false
+
+
+
+示例 6：
+
+输入：s = "{a[b]}"
+
+输出：false
+
+
+
+示例 7：
+
+输入：s = "[a(b)]"
+
+输出：true
+
+
+
+示例 8：
+
+输入：s = "a"
+
+输出：true
+
+
+
+示例 9：
+
+输入：s = "{a}"
+
+输出：false
+
+
+
+示例 10：
+
+输入：s = "((a))"
+
+输出：false
+
+
+
+示例 11：
+
+输入：s = "[()[()]]"
+
+输出：false
+
+
+
+示例 12：
+
+输入：s = "[[()]()]"
+
+输出：false
+
+*/
+
+
+
+
+
+public boolean isValidCharacter(String s){
+
+		if(s.length()%2!=0){
+
+			return false;
+
+		}
+
+		
+
+		
+
+		Map<Character,Character> validPairs=new HashMap<Character,Character>();
+
+			validPairs.put('}', '{');
+
+			validPairs.put(']', '[');
+
+			validPairs.put(')', '(');
+
+
+
+		Deque<Character> stack=new LinkedList<Character>();
+
+		
+
+		for(int i=0;i<s.length();i++){
+
+			char ch=s.charAt(i);
+
+			if()
+
+			if(validPairs.containsKey(ch)){
+
+				if(stack.isEmpty()){
+
+					return false;
+
+				}
+
+				char tmp=validPairs.get(ch);
+
+				char top=stack.peek();
+
+				if(tmp!=top){
+
+					return false;
+
+				}
+
+				
+
+				stack.pop();
+
+			}else{
+
+				stack.push(ch);
+
+			}
+
+		}
+
+		return stack.isEmpty();
+
+		
+
+	}
+
+/**
+
+我们需要帮助员工在亚马逊找mentor。这个mentor需要在员工的 4 层好友中寻找到相同职位，职级更高的员工。
+
+我们有一个API getFriends（Emp employee） 会回一个好友列表 (list). 这个列表就是员工的1 层好友。
+
+朋友的朋友是2层好友。
+
+
+
+// We are working on an application that helps find mentors for Amazon employees. 
+
+// We want to make recommendations for people that are within 4 (N) degrees of an employee's circle of friends. 
+
+// mentors have the same role and are more senior than the requested employee. 
+
+// We are given an API call to get the information about friends for an employee.
+
+
+
+// Write a method that will take an Employee and return a list of IDs of recommended mentors.
+
+
+
+/**
+
+ * This call is provided to you.
+
+ * Returns only the other employees immediately known to the given employee
+
+ */
+
+List<Emp> getFriends(Emp employee);  
+
+
+
+
+
+class Emp {
+
+  long id;
+
+  String name;
+
+  String title; // This will match across employees with the same job.
+
+  int level; // A higher number means more senior
+
+}
+
+
+
+// Method to implement
+
+List<Emp> getSuggestedMentors(Emp loggedIn);
+
+
+
+
+
+
+
+public List<Emp> getSuggestedMentors(Emp loggedIn){
+
+	List<Emp> firstLevel=getFriends(loggedIn);
+
+	List<Emp> secondLevel=getFriends(firstLevel);
+
+	List<Emp> thirdLevel=getFriends(secondLevel);
+
+	List<Emp> fourthLevel=getFriends(thirdLevel);
+
+
+
+	List<Emp> mentorList=new ArrayList<Emp>();
+
+	List<Emp> result=new ArrayList<>();
+
+	List<Emp> firstLevelMentor=getMentor(getFriends(loggedIn));
+
+	List<Emp> sencondLevelMentor=getMentor(getFriends(firstLevel),loggedIn));
+
+	List<Emp> thirdLevelMentor=getMentor(getFriends(secondLevel),loggedIn));
+
+	List<Emp> fourthLevelMentor=getMentor(getFriends(thirdLevelMentor),loggedIn));
+
+	
+
+	
+
+	result.addAll(fourthLevelMentor);
+
+
+
+	return result;
+
+	
+
+}
+
+public List<Emp> getMentor(List<Emp> friendList,Emp loggedIn){
+
+	List<Emp> mentorList=new ArrayList<Emp>();
+
+	for(Emp employee:friendList){
+
+	if(employee.level >loggedIn.level){
+
+		mentorList.add(employee);
+
+	}
+
+	}
+
+	return mentorList;	
+
+}
+
+*/
+
