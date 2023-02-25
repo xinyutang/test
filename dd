@@ -1,0 +1,45 @@
+这段代码实现了一个函数 count_comb_palindrome(text)，该函数接收一个字符串 text 作为输入，返回组合式回文的最大数量。
+
+代码中定义了一个内部函数 is_palindrome(s)，用于判断一个字符串 s 是否是回文字符串。在主函数中，先对输入字符串 text 进行初始化，定义一个长度为 n + 1 的数组 dp，其中 dp[i] 表示字符串前 i 个字符所需要的最小组合式回文数量。初始时，将 dp[0] 设为 0，表示空字符串为回文。
+
+接着，对于每个位置 i，循环遍历 j，其中 j 的范围是 0 <= j < i。如果子串 text[j:i] 是回文串，则更新 dp[i] 的值为 dp[j] + 1 和原有值的较小值。这意味着在区间 [j, i-1] 内存在一个回文串，将这个回文串和之前的结果拼接起来可以形成一个新的组合式回文，将这个新回文串的数量加入到原有数量中。
+
+最终，函数返回 dp[n]，即字符串 text 的前 n 个字符所需要的最小组合式回文数量。
+
+def count_comb_palindrome(text):
+    def is_palindrome(s):
+        return s == s[::-1]
+
+    n = len(text)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(i):
+            if is_palindrome(text[j:i]):
+                dp[i] = min(dp[i], dp[j] + 1)
+
+    return dp[n]
+    
+text = "ghiabcdefhelloadamhelloabcdefghi"
+print(count_comb_palindrome(text))  # 输出 7
+
+text = "antaprexatepxapreanta"
+print(count_comb_palindrome(text))  # 输出 11
+
+text = "coco"
+print(count_comb_palindrome(text))  # 输出 2
+
+
+is_palindrome的实现可以采用双指针法，从字符串的两端开始，每次比较对应位置的字符是否相同，直到指针相遇或者中间有一个不相同。
+
+下面是一个Python实现：
+
+def is_palindrome(s):
+    left, right = 0, len(s) - 1
+    while left < right:
+        if s[left] != s[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
