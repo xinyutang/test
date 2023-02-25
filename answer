@@ -1,0 +1,48 @@
+一个可能的解决方案是使用哈希表来存储邮箱和密码的对应关系，然后遍历第二个文件中的每个邮箱，查找其对应的密码是否在哈希表中出现。具体实现步骤如下：
+
+读取第一个文件，将每一行按Tab分割成邮箱和密码，并将其存储在哈希表中。
+读取第二个文件，遍历每个邮箱，从哈希表中查找对应的密码是否存在。
+输出能找到密码的邮箱以及对应的密码。
+时间复杂度分析：
+
+哈希表的插入和查找操作的时间复杂度为O(1)，因此哈希表的构建时间复杂度为O(n)，其中n为第一个文件的行数。
+对于第二个文件，遍历每个邮箱需要O(m)的时间复杂度，其中m为第二个文件的行数。每个邮箱在哈希表中查找其对应的密码也需要O(1)的时间复杂度。因此，第二个文件的查找时间复杂度为O(m)。
+空间复杂度分析：
+
+哈希表需要存储每个邮箱和对应的密码，因此空间复杂度为O(n)，其中n为第一个文件的行数。
+需要注意的是，该方法的时间复杂度和空间复杂度都与第一个文件的大小有关。因此，如果第一个文件很大，则需要使用更高效的哈希表实现或者采用其他算法。
+
+
+
+def read_passwords(file_path):
+    """
+    读取密码文件，返回字典形式的邮箱和密码对应关系
+    """
+    passwords = {}
+    with open(file_path, 'r') as f:
+        for line in f:
+            email, password = line.strip().split('\t')
+            passwords[email] = password
+    return passwords
+
+def find_passwords(file_path, passwords):
+    """
+    在邮箱文件中查找能够找到密码的邮箱
+    """
+    found_emails = []
+    with open(file_path, 'r') as f:
+        for line in f:
+            email = line.strip()
+            if email in passwords:
+                found_emails.append(email)
+    return found_emails
+
+passwords = read_passwords('passwords.txt')
+found_emails = find_passwords('emails.txt', passwords)
+print(found_emails)
+
+需要注意的是，由于密码文件非常大，可能会导致内存不足的问题，可以考虑使用分块读取的方法，将密码文件分成若干块，每次读取一块进行匹配。
+
+
+
+
