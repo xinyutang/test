@@ -1,6 +1,39 @@
 n = int(input())
 a = list(map(int, input().split()))
 
+# 计算施展黑魔法的方案数
+cnt_neg = 0  # 记录负数个数
+for x in a:
+    if x < 0:
+        cnt_neg += 1
+ans_neg = cnt_neg * (n - cnt_neg)
+if cnt_neg > 0:
+    ans_neg += cnt_neg - 1  # 减去重复计算的情况
+
+# 计算施展白魔法的方案数
+ans_pos = 0
+cur_prod = 1  # 当前连续区间的积
+zero_pos = -1  # 上一个零元素的位置
+for i in range(n):
+    cur_prod *= a[i]
+    if cur_prod == 0:
+        zero_pos = i
+        cur_prod = 1
+    elif cur_prod > 0:
+        ans_pos += 1
+    elif zero_pos != -1:
+        ans_pos += i - zero_pos - 1
+    else:
+        ans_pos += i
+
+print(ans_neg, ans_pos)
+
+
+
+
+n = int(input())
+a = list(map(int, input().split()))
+
 # 计算黑魔法的方案数
 cnt_negative = 0
 for i in range(n):
