@@ -1,3 +1,29 @@
+n = int(input())
+a = list(map(int, input().split()))
+
+# 计算黑魔法的方案数
+cnt_negative = 0
+for i in range(n):
+    if a[i] < 0:
+        cnt_negative += 1
+cnt_black = cnt_negative * (n - cnt_negative) + cnt_negative
+
+# 计算白魔法的方案数
+cnt_positive = 0
+cnt_zero = 0
+cnt_total = 0
+for i in range(n):
+    if a[i] > 0:
+        cnt_positive += 1
+    elif a[i] == 0:
+        cnt_zero += 1
+    cnt_total += 1
+cnt_white = cnt_positive * (cnt_total - cnt_positive - cnt_zero) + cnt_positive + cnt_negative
+
+print(cnt_black, cnt_white)
+
+
+
 这可能是因为你的行为和兴趣模式被大数据公司收集和分析，从而推测出你可能会对某些话题感兴趣。比如，如果你和朋友在聊天中提到了一本新书，而你在之后的网上活动中搜索了这本书的相关内容，大数据公司就可能会推荐给你这本书的广告或者相关内容，以提高你的购买或者浏览兴趣。这种行为数据分析是通过算法来完成的，而不是通过实时窃听。
 
 
