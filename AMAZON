@@ -1,3 +1,39 @@
+n = int(input())
+a = list(map(int, input().split()))
+
+# 用一个数组记录以i为结尾的连续区间的最大正能量和最小负能量
+max_sum = [0] * n
+min_sum = [0] * n
+if a[0] > 0:
+    max_sum[0] = a[0]
+elif a[0] < 0:
+    min_sum[0] = a[0]
+
+for i in range(1, n):
+    if a[i] > 0:
+        max_sum[i] = max(a[i], max_sum[i-1] + a[i])
+        min_sum[i] = min(a[i], min_sum[i-1] + a[i])
+    elif a[i] < 0:
+        max_sum[i] = max(a[i], min_sum[i-1] + a[i])
+        min_sum[i] = min(a[i], max_sum[i-1] + a[i])
+
+# 统计黑魔法和白魔法方案数
+num_black_magic = 0
+num_white_magic = 0
+for i in range(n):
+    if min_sum[i] < 0:
+        num_black_magic += i+1
+    else:
+        num_white_magic += i+1
+
+print(num_black_magic, num_white_magic)
+解释一下这个实现的思路：
+
+首先用两个数组max_sum和min_sum记录以每个位置为结尾的连续区间的最大正能量和最小负能量。这里用动态规划的思想：以i为结尾的区间要么包含第i个元素，要么不包含。如果包含，那么可以把第i个元素与前面的区间结合成一个新的区间，此时最大正能量和最小负能量都要重新计算。如果不包含，那么以前一个位置为结尾的区间的最大正能量和最小负能量就可以直接继承过来。
+
+得到max_sum和min_sum数组之后，就可以统计出施展黑魔法和白魔法的方案数了。以每个位置为结尾的连续区间都是合法的方案，所以方案数就是1+2+...+n=n*(n+1)//2。如果以位置i为结尾的区间的最小负能量小于0，那么它可以作为一个黑魔法的方案；否则它可以作为一个白魔法的方案。因此可以分别累加每个位置的方案数得到最终结果。
+
+
 魔法师小树有n个魔法元素，他把它们排成-行，从左到右第1个魔法元素的能量值是一个非
 零整数ajo小树每次施展竟法的方式是挑选一段连续非空的魔法元素， 将它们的能量值乘起
 来，得到值就是这次魔法的总能量。如果总能量大于零即为白魔法，否则为黑魔法。
