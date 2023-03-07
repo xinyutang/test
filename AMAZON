@@ -1,3 +1,27 @@
+n = int(input())
+customers = {}
+priority_queue = []
+for i in range(n):
+    op, *args = input().split()
+    if op == 'a':
+        num, priority = map(int, args)
+        if priority not in customers:
+            customers[priority] = []
+        customers[priority].append(num)
+    else:
+        while not priority_queue:
+            priority = min(customers)
+            priority_queue = customers.pop(priority)
+        print(priority_queue.pop(0))
+        if priority_queue:
+            customers[priority] = priority_queue
+            priority_queue = []
+首先，输入第一个整数n，表示事件数量。然后，我们使用一个字典来保存每个优先级的客户列表。对于每个到来的客户，我们将其添加到相应优先级的客户列表中。对于每个银行办理业务的事件，我们按优先级从低到高遍历客户字典，并将优先级最高的客户列表添加到优先级队列中。我们然后打印队列中的第一个客户，并将剩余客户重新添加到字典中，以便以后处理。
+
+
+
+
+
 Question Description
 Problem Statement
 Booking.com uses a 3rd party provider in order to convert from the user's currency to the actual currency listed by the partner/hotel. For
