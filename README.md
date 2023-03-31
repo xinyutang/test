@@ -1,3 +1,84 @@
+请给出可以通过上述测试用例的代码
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String[] words = scanner.nextLine().split(",");
+        String input = scanner.nextLine();
+        List<String> res = parseWords(words, input);
+        for (int i = 0; i < res.size(); i++) {
+            System.out.print(res.get(i));
+            if (i != res.size() - 1) {
+                System.out.print(",");
+            }
+        }
+    }
+
+    public static List<String> parseWords(String[] words, String input) {
+        List<String> res = new ArrayList<>();
+        Set<String> wordSet = new HashSet<>(Arrays.asList(words));
+        Map<String, Integer> countMap = new HashMap<>();
+        String[] inputArr = input.split(" ");
+        for (String word : inputArr) {
+            if (wordSet.contains(word)) {
+                if (countMap.containsKey(word)) {
+                    countMap.put(word, countMap.get(word) + 1);
+                } else {
+                    countMap.put(word, 1);
+                    res.add(word);
+                }
+            }
+        }
+        return res;
+    }
+}
+
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // 读取输入
+        Scanner scanner = new Scanner(System.in);
+        String[] words = scanner.nextLine().split(","); // ChatGPT的词库，用逗号分隔
+        String input = scanner.nextLine(); // 需要分析的用户输入句子
+        // 解析用户输入句子，输出符合ChatGPT词库的单词列表
+        List<String> res = parseWords(words, input);
+        // 输出结果
+        for (int i = 0; i < res.size(); i++) {
+            System.out.print(res.get(i));
+            if (i != res.size() - 1) {
+                System.out.print(",");
+            }
+        }
+    }
+
+    /**
+     * 解析用户输入句子，输出符合ChatGPT词库的单词列表
+     * @param words ChatGPT的词库，数组形式
+     * @param input 需要分析的用户输入句子
+     * @return 符合ChatGPT词库的单词列表，单词间用英文逗号隔开
+     */
+    public static List<String> parseWords(String[] words, String input) {
+        List<String> res = new ArrayList<>(); // 符合ChatGPT词库的单词列表
+        Set<String> wordSet = new HashSet<>(Arrays.asList(words)); // 将ChatGPT词库转换为HashSet，方便判断某个单词是否属于词库
+        Map<String, Integer> countMap = new HashMap<>(); // 用于记录每个单词出现的次数
+        String[] inputArr = input.split(" "); // 将输入句子按照空格分割为一个字符串数组
+        for (String word : inputArr) {
+            if (wordSet.contains(word)) { // 如果当前单词在ChatGPT词库中出现过
+                if (countMap.containsKey(word)) { // 如果当前单词之前已经出现过
+                    countMap.put(word, countMap.get(word) + 1); // 计数器加1
+                } else { // 如果当前单词是第一次出现
+                    countMap.put(word, 1); // 初始化计数器
+                    res.add(word); // 将当前单词添加到结果列表中
+                }
+            }
+        }
+        return res; // 返回符合ChatGPT词库的单词列表
+    }
+}
+
+
 告诉她这是常见问题，许多人都曾经遇到过类似的情况，不必过于担心。
 
 鼓励她及时送修或找专业人员检查，避免自己在处理时进一步损坏手机。
