@@ -1,142 +1,62 @@
-请给出可以通过上述测试用例的代码
-import java.util.*;
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        String[] words = scanner.nextLine().split(",");
-        String input = scanner.nextLine();
-        List<String> res = parseWords(words, input);
-        for (int i = 0; i < res.size(); i++) {
-            System.out.print(res.get(i));
-            if (i != res.size() - 1) {
-                System.out.print(",");
-            }
-        }
-    }
+这道题是一个模拟题，需要模拟小美对加号进行操作的过程，并计算每次操作后的表达式的值。可以使用一个变量记录当前表达式的值，并在每次操作后更新。具体的思路如下：
 
-    public static List<String> parseWords(String[] words, String input) {
-        List<String> res = new ArrayList<>();
-        Set<String> wordSet = new HashSet<>(Arrays.asList(words));
-        Map<String, Integer> countMap = new HashMap<>();
-        String[] inputArr = input.split(" ");
-        for (String word : inputArr) {
-            if (wordSet.contains(word)) {
-                if (countMap.containsKey(word)) {
-                    countMap.put(word, countMap.get(word) + 1);
-                } else {
-                    countMap.put(word, 1);
-                    res.add(word);
-                }
-            }
-        }
-        return res;
-    }
-}
+读入输入，记录初始的表达式的值。
+循环读入每次操作，根据操作符更新对应位置的符号，计算新的表达式的值，并输出。
+在计算表达式的值时，使用一个栈来维护当前的操作符和数字，遇到加号则直接将数字入栈，遇到减号则将负数入栈，遇到乘号或除号则将栈顶数字弹出，与当前数字进行相应的计算，并将结果重新入栈。最终将栈中的数字相加即可得到表达式的值。
+需要注意的是，浮点数计算时可能会出现精度误差，需要在输出时进行四舍五入处理。另外，题目中说可以将加号改为加号，但是这种情况没有任何意义，可以直接忽略。
 
-import java.util.*;
+时间复杂度：每次操作需要遍历整个表达式，时间复杂度为O(n)，总时间复杂度为O(nm)。空间复杂度：需要使用一个栈来维护操作符和数字，空间复杂度为O(n)。
 
-public class Main {
-    public static void main(String[] args) {
-        // 读取输入
-        Scanner scanner = new Scanner(System.in);
-        String[] words = scanner.nextLine().split(","); // ChatGPT的词库，用逗号分隔
-        String input = scanner.nextLine(); // 需要分析的用户输入句子
-        // 解析用户输入句子，输出符合ChatGPT词库的单词列表
-        List<String> res = parseWords(words, input);
-        // 输出结果
-        for (int i = 0; i < res.size(); i++) {
-            System.out.print(res.get(i));
-            if (i != res.size() - 1) {
-                System.out.print(",");
-            }
-        }
-    }
+完整的代码如下：
+import math
 
-    /**
-     * 解析用户输入句子，输出符合ChatGPT词库的单词列表
-     * @param words ChatGPT的词库，数组形式
-     * @param input 需要分析的用户输入句子
-     * @return 符合ChatGPT词库的单词列表，单词间用英文逗号隔开
-     */
-    public static List<String> parseWords(String[] words, String input) {
-        List<String> res = new ArrayList<>(); // 符合ChatGPT词库的单词列表
-        Set<String> wordSet = new HashSet<>(Arrays.asList(words)); // 将ChatGPT词库转换为HashSet，方便判断某个单词是否属于词库
-        Map<String, Integer> countMap = new HashMap<>(); // 用于记录每个单词出现的次数
-        String[] inputArr = input.split(" "); // 将输入句子按照空格分割为一个字符串数组
-        for (String word : inputArr) {
-            if (wordSet.contains(word)) { // 如果当前单词在ChatGPT词库中出现过
-                if (countMap.containsKey(word)) { // 如果当前单词之前已经出现过
-                    countMap.put(word, countMap.get(word) + 1); // 计数器加1
-                } else { // 如果当前单词是第一次出现
-                    countMap.put(word, 1); // 初始化计数器
-                    res.add(word); // 将当前单词添加到结果列表中
-                }
-            }
-        }
-        return res; // 返回符合ChatGPT词库的单词列表
-    }
-}
+# 计算一次表达式的值
+def calculate(expr):
+    # 先将字符串中的加减乘除符号替换为Python的数学运算符
+    # eval函数可以直接计算字符串表达式的值
+    # 注意：使用eval存在一定的安全隐患，实际应用中应该谨慎使用
+    expr = expr.replace('+', '+').replace('-', '-').replace('*', '*').replace('/', '/')
+    return eval(expr)
 
+# 处理一次操作
+def process_op(nums, ops, idx, op):
+    # 将指定位置的加号替换为指定的加减乘除符号
+    ops[idx] = op
+    # 构造新的表达式
+    expr = ""
+    for i in range(len(nums)):
+        if i > 0:
+            expr += ops[i-1]
+        expr += str(nums[i])
+    # 计算表达式的值，并四舍五入保留一位小数
+    return round(calculate(expr), 1)
 
-告诉她这是常见问题，许多人都曾经遇到过类似的情况，不必过于担心。
+# 处理多次操作
+def process_ops(nums, ops, ops_list):
+    # 记录每次操作的结果
+    results = []
+    # 逐次处理每次操作
+    for i in range(len(ops_list)):
+        idx, op = ops_list[i]
+        # 处理一次操作并记录结果
+        result = process_op(nums, ops, idx-1, op)
+        results.append(result)
+    return results
 
-鼓励她及时送修或找专业人员检查，避免自己在处理时进一步损坏手机。
+# 读入数据
+n = int(input())
+nums = list(map(int, input().split()))
+m = int(input())
+ops = ['+'] * (n-1)
+ops_list = []
+for i in range(m):
+    idx, op = input().split()
+    ops_list.append((int(idx), op))
 
-提供帮助，比如帮她找到可靠的修理店或者一些应急措施，如将手机放入密闭的袋子中，加入适量干燥剂等。
+# 处理多次操作
+results = process_ops(nums, ops, ops_list)
 
-安慰她手机里的数据不要着急，可以通过其他渠道进行数据备份。
-
-另外，可以从其他方面分散她的注意力，比如提议一起出去玩、看电影等，帮助她转移注意力，减轻情绪负担。
-
-担心，进水是常见问题，现在重要的是采取正确的措施来修复它。最好将手机放在干燥的地方，不要着急尝试开机或充电，让手机晾干至少24小时，然后再试试开机。如果手机还是不能开机，你可以带它去专业的手机维修店或服务中心寻求帮助。”
-
-首先，要让女朋友知道你理解她的情况并且关心她的感受，可以说：“很抱歉听到这个消息，我知道你很在意你的手机，我可以理解你的失落和焦虑。” 然后可以提供一些帮助，比如让她知道怎么挽救手机或者提供一些备用设备，或者提供其他的解决方案，比如寻求专业维修。最后，可以给予一些鼓励和支持，比如说：“我相信你会找到解决办法的，不要太担心了，我会一直在你身边支持你的。
-
-1、广义线性模型（Generalized Linear Model, GLM）是一类基于线性预测函数和非线性变换的统计模型，广泛应用于机器学习算法中。GLM中的预测函数可以通过参数化链接函数来连接响应变量和预测变量，进而描述两者之间的关系。具体而言，GLM可以通过最大似然估计等方法学习到参数值，从而用于分类和回归等任务。
-
-常见的GLM包括逻辑回归（Logistic Regression）、泊松回归（Poisson Regression）、指数族分布（Exponential Family Distribution）等。逻辑回归用于二分类问题，泊松回归用于计数问题，指数族分布用于多分类问题等。
-
-2、标准的支持向量机（Support Vector Machine, SVM）是一种二分类模型，其目标是找到一个最优分类面，使得分类错误的样本最小化。在SVM中，样本被分为+1或-1两类，不考虑后验概率。然而，在实际应用中，我们通常需要了解样本属于每一类的概率，即后验概率。
-
-为了实现后验概率输出，可以使用Platt校准（Platt Scaling）方法或直接优化后验概率的多分类SVM（Multi-class SVM）。
-
-Platt校准方法通过在SVM输出后添加一个逻辑回归，来将SVM的输出转化为后验概率。具体而言，根据训练数据集的输出和SVM输出，可以拟合出逻辑回归的参数，从而实现后验概率输出。
-
-多分类SVM通过在原始SVM问题的基础上引入一些技巧，如一对多（One-vs-All）策略或一对一（One-vs-One）策略，来实现多分类问题的后验概率输出。
-
-
-1、广义线性模型是机器学习算法中非常重要的一类模型，可以用于分类、回归等多种任务。广义线性模型假设输出变量y服从指数分布族，同时假设特征和输出变量之间的关系可以用一个线性组合来表示。这个线性组合通过一个链接函数将其映射到指数分布族中的参数空间，从而使模型具有非常广泛的适用性和可解释性。
-
-2、标准的SVM是一种二分类模型，可以使用核方法将数据映射到高维空间中，从而找到一个最优分类面来区分两类数据。在实际应用中，后验概率是非常有用的，因为它可以告诉我们每个样本属于每一类的概率，这对于一些任务比如风险评估非常有帮助。
-
-要实现SVM的后验概率输出，有两种常用的方法。第一种方法是使用Platt Scaling，该方法通过在SVM的输出结果上再拟合一个逻辑回归模型来实现后验概率输出。第二种方法是使用直接优化后验概率的SVM方法，例如SVMlight和LIBSVM中的Probabilistic SVM方法。这些方法在训练SVM的同时，通过加入先验概率和极大似然估计来直接优化后验概率的输出。
-
-广义线性模型是一种广泛应用于机器学习的模型，其通过对线性模型进行扩展和泛化，可以适用于更广泛的数据类型和应用场景。广义线性模型可以用于回归问题和分类问题，并且可以处理二元和多元分类问题。其中，Logistic回归、softmax回归和线性判别分析等算法都是广义线性模型的典型应用。
-
-在标准的SVM中，样本被分为+1或-1，但在实际应用中，我们往往需要得到样本属于某一类别的后验概率，以便进行更精细的分类决策或者风险控制。为了使SVM能够输出后验概率，通常有以下两种方法：
-
-Platt缩放法：该方法通过在SVM输出值上训练一个sigmoid函数，将输出值映射到[0,1]区间内，从而得到后验概率。具体实现中，需要使用交叉验证的方法确定sigmoid函数的参数，以避免过拟合。
-直接优化后验概率：该方法通过修改SVM的目标函数，引入一个正则化项来约束模型复杂度，从而使模型更稳健。通过将后验概率引入到目标函数中，可以直接优化后验概率。具体实现中，需要使用一些优化算法来求解最优参数。
-
-#Write afunction solution that, given an array A consisting of N integers, returns the number of fragments of A whose sum equals 0 (that is, pairs(P Q) such that P ≤Q and the sum A[P]+A[P+1]+.…. + A[Q] is 0). The function should return -1 if this number exceeds 1,000,000,000.
-Examples:
-1. GivenA=[2,-2,3,04,-7],the function should return 4, as explained on this picture:
-
-2. Given A =[0,o, 0] of length 100,000, the function should return -1.
-Write an efficient algorithm for the following assumptions:
-N is an integer within the range [1..100,000];
-each element of array A is an integer within the range test
-
-https://www.google.com/appserve/mkt/p/AFnwnKUFNcRXfxJ0cOyyf63xlfpXiago9Awjad9AuZvxgn8lJJcyONGXEP4OpZGqxJf2IphKFeGDMBs1ZSi3ljheqbDQ_lVN4j3eA8XXP_fTbK97G0BJeoycScpHO9VBpivxDaUdd2KN3DlVJteBzHMInFA1gSVBu9XW_c4Eb2SqcgmSNSl-5_rrFK_jRrmwn_dKHz-QMZclPgs6o8o0W98bSb6VXX2ry-0P7Mno-EZcn8CTzp5e-Xi1F2JKCNMbOAxF5zO1XTYoo-mdrZbEwK-j5JZ0Hf-C83ZUong_7vD3-xBS3R91Ls5eMmZivi_5cLcN2kuf2Yj-
-
-
-https://www.google.com/appserve/mkt/p/AFnwnKUFNcRXfxJ0cOyyf63xlfpXiago9Awjad9AuZvxgn8lJJcyONGXEP4OpZGqxJf2IphKFeGDMBs1ZSi3ljheqbDQ_lVN4j3eA8XXP_fTbK97G0BJeoycScpHO9VBpivxDaUdd2KN3DlVJteBzHMInFA1gSVBu9XW_c4Eb2SqcgmSNSl-5_rrFK_jRrmwn_dKHz-QMZclPgs6o8o0W98bSb6VXX2ry-0P7Mno-EZcn8CTzp5e-Xi1F2JKCNMbOAxF5zO1XTYoo-mdrZbEwK-j5JZ0Hf-C83ZUong_7vD3-xBS3R91Ls5eMmZivi_5cLcN2kuf2Yj-
-
-https://www.google.com/appserve/mkt/p/AFnwnKUFNcRXfxJ0cOyyf63xlfpXiago9Awjad9AuZvxgn8lJJcyONGXEP4OpZGqxJf2IphKFeGDMBs1ZSi3ljheqbDQ_lVN4j3eA8XXP_fTbK97G0BJeoycScpHO9VBpivxDaUdd2KN3DlVJteBzHMInFA1gSVBu9XW_c4Eb2SqcgmSNSl-5_rrFK_jRrmwn_dKHz-QMZclPgs6o8o0W98bSb6VXX2ry-0P7Mno-EZcn8CTzp5e-Xi1F2JKCNMbOAxF5zO1XTYoo-mdrZbEwK-j5JZ0Hf-C83ZUong_7vD3-xBS3R91Ls5eMmZivi_5cLcN2kuf2Yj-
-
-https://careers.google.com/jobs/results/4683855741255680/
-
------------------------
-
-https://docs.google.com/forms/d/e/1FAIpQLSexUMuljGTy_o6hzLaorbFPllOv1sdg2f5mlgjbWWRs4lgp2g/viewform?entry.581279853=960629123
+# 输出结果
+for result in results:
+    print(result)
