@@ -1,3 +1,16 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+
+# 设置随机种子
+seed_value = 2023
+np.random.seed(seed_value)
+
+# Sigmoid激活函数
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
 # 定义逻辑回归算法
 class LogisticRegression:
     def __init__(self, learning_rate=0.003, iterations=100):
@@ -40,3 +53,37 @@ class LogisticRegression:
     def score(self, y_pred, y):
         accuracy = (y_pred == y).sum() / len(y)
         return accuracy
+
+# 导入数据
+iris = load_iris()
+X = iris.data[:, :2]
+y = (iris.target != 0) * 1
+
+# 划分训练集、测试集
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=seed_value)
+
+# 训练模型
+model = LogisticRegression(learning_rate=0.03, iterations=1000)
+model.fit(X_train, y_train)
+
+# 结果
+y_train_pred = model.predict(X_train)
+y_test_pred = model.predict(X_test)
+
+score_train = model.score(y_train_pred, y_train)
+score_test = model.score(y_test_pred, y_test)
+
+print('训练集Accuracy: ', score_train)
+print('测试集Accuracy: ', score_test)
+
+# 可视化决策边界
+x1_min, x1_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+x2_min, x2_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+xx1, xx2 = np.meshgrid(np.linspace(x1_min, x1_max, 100), np.linspace(x2_min, x2_max, 100))
+Z = model.predict(np.c_[xx1.ravel(), xx2.ravel()])
+Z = Z.reshape(xx1.shape)
+plt.contourf(xx1, xx2, Z, cmap=plt.cm.Spectral)
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Spectral)
+plt.xlabel("Sepal length")
+plt.ylabel("Sepal width")
+plt.show()
