@@ -1,3 +1,12 @@
+
+你可以使用文本匹配算法，如余弦相似度、Jaccard相似度等，来计算query和库里面所有问题的相似度，然后根据相似度排序，选出相似度最高的前几个问题。如果你想要更高的精度，可以使用深度学习模型，如BERT、RoBERTa等。¹²³
+
+希望这能帮到你。
+
+Source: Conversation with Bing, 6/8/2023(1) 搜索中的深度匹配模型（下） - 知乎 - 知乎专栏. https://zhuanlan.zhihu.com/p/118183738 Accessed 6/8/2023.
+(2) FAQ检索式问答系统及文本匹配计算 - 知乎 - 知乎专栏. https://zhuanlan.zhihu.com/p/79698318 Accessed 6/8/2023.
+(3) 基于规则的query分析 - 简书. https://www.jianshu.com/p/1d5a4ae490c1 Accessed 6/8/2023.
+
 import math
 
 # 计算一次表达式的值
