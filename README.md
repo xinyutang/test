@@ -1,6 +1,12 @@
-好的，这是每行代码的详细注释：
+可以使用NumPy库和Python实现逻辑回归算法。下面是一个示例代码，每行都有详细注释：
+逻辑回归算法的详细思路如下：
 
-```python
+定义假设函数，即sigmoid函数。
+定义损失函数，即交叉熵损失函数。
+定义梯度函数，即损失函数对参数的偏导数。
+使用梯度下降法或其他优化算法最小化损失函数，得到最优参数。
+使用最优参数进行预测。
+
 import numpy as np  # 导入NumPy库
 
 def sigmoid(z):  # 定义sigmoid函数
@@ -31,8 +37,3 @@ def logistic_regression(X, y, theta, alpha, num_iters):  # 定义逻辑回归函
         J_history.append(cost_function(theta, X, y))  # 记录损失函数值
     
     return theta, J_history  # 返回theta和损失函数值列表
-```
-
-: https://www.w3schools.com/python/python_ml_logistic_regression.asp
-: https://docs.python.org/3/tutorial/index.html
-: https://www.w3schools.com/python/
