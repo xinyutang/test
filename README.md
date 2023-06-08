@@ -1,39 +1,42 @@
-可以使用NumPy库和Python实现逻辑回归算法。下面是一个示例代码，每行都有详细注释：
-逻辑回归算法的详细思路如下：
+# 定义逻辑回归算法
+class LogisticRegression:
+    def __init__(self, learning_rate=0.003, iterations=100):
+        self.learning_rate = learning_rate # 学习率
+        self.iterations = iterations # 迭代次数
 
-定义假设函数，即sigmoid函数。
-定义损失函数，即交叉熵损失函数。
-定义梯度函数，即损失函数对参数的偏导数。
-使用梯度下降法或其他优化算法最小化损失函数，得到最优参数。
-使用最优参数进行预测。
+    def fit(self, X, y):
+        # 初始化参数
+        self.weights = np.random.randn(X.shape[1])
+        self.bias = 0
 
-import numpy as np  # 导入NumPy库
+        # 梯度下降
+        for i in range(self.iterations):
+            # 计算sigmoid函数的预测值, y_hat = w * x + b
+            y_hat = sigmoid(np.dot(X, self.weights) + self.bias)
 
-def sigmoid(z):  # 定义sigmoid函数
-    return 1 / (1 + np.exp(-z))
+            # 计算损失函数
+            loss = (-1 / len(X)) * np.sum(y * np.log(y_hat) + (1 - y) * np.log(1 - y_hat))
 
-def cost_function(theta, X, y):  # 定义损失函数
-    m = len(y)  # 样本数量
-    h = sigmoid(X @ theta)  # 计算假设函数值
-    J = -1 / m * (y.T @ np.log(h) + (1 - y).T @ np.log(1 - h))  # 计算损失函数值
-    return J
+            # 计算梯度
+            dw = (1 / len(X)) * np.dot(X.T, (y_hat - y))
+            db = (1 / len(X)) * np.sum(y_hat - y)
 
-def gradient(theta, X, y):  # 定义梯度函数
-    m = len(y)  # 样本数量
-    h = sigmoid(X @ theta)  # 计算假设函数值
-    grad = 1 / m * X.T @ (h - y)  # 计算梯度
-    return grad
+            # 更新参数
+            self.weights -= self.learning_rate * dw
+            self.bias -= self.learning_rate * db
 
-def predict(theta, X):  # 定义预测函数
-    p = sigmoid(X @ theta)  # 计算预测值
-    return p
+            # 打印损失函数值
+            if i % 10 == 0:
+                print(f"Loss after iteration {i}: {loss}")
 
-def logistic_regression(X, y, theta, alpha, num_iters):  # 定义逻辑回归函数
-    m = len(y)  # 样本数量
-    J_history = []  # 初始化损失函数值列表
+    # 预测
+    def predict(self, X):
+        y_hat = sigmoid(np.dot(X, self.weights) + self.bias)
+        y_hat[y_hat >= 0.5] = 1
+        y_hat[y_hat < 0.5] = 0
+        return y_hat
     
-    for i in range(num_iters):  # 迭代num_iters次
-        theta = theta - alpha * gradient(theta, X, y)  # 梯度下降法更新theta
-        J_history.append(cost_function(theta, X, y))  # 记录损失函数值
-    
-    return theta, J_history  # 返回theta和损失函数值列表
+    # 精度
+    def score(self, y_pred, y):
+        accuracy = (y_pred == y).sum() / len(y)
+        return accuracy
