@@ -1,0 +1,160 @@
+import java.util.*;
+
+public class CurrencyConverter{
+    private Map<String, Map<String, Double>> conversionRates;
+
+    public CurrencyConverter() {
+        conversionRates = new HashMap<>();
+    }
+
+    public void addConversionRate(String fromCurrency, String toCurrency, double rate) {
+        conversionRates.computeIfAbsent(fromCurrency, k -> new HashMap<>()).put(toCurrency, rate);
+    }
+
+    public double convertCurrency(double amount, String fromCurrency, String toCurrency, double serviceFee) {
+        if (!conversionRates.containsKey(fromCurrency) || !conversionRates.containsKey(toCurrency))
+            return -1; // Conversion not possible
+
+        List<String> path = findConversionPath(fromCurrency, toCurrency);
+        if (path.isEmpty())
+            return -1; // Conversion not possible
+
+        double totalRate = 1.0;
+        for (int i = 0; i < path.size() - 1; i++) {
+            String currentCurrency = path.get(i);
+            String nextCurrency = path.get(i + 1);
+            double rate = conversionRates.get(currentCurrency).get(nextCurrency);
+            totalRate *= rate;
+        }
+
+        double convertedAmount = amount * totalRate;
+        double serviceFeeAmount = serviceFee * (path.size() - 1);
+        return convertedAmount + serviceFeeAmount;
+    }
+
+    private List<String> findConversionPath(String fromCurrency, String toCurrency) {
+        Set<String> visited = new HashSet<>();
+        Queue<List<String>> queue = new LinkedList<>();
+        queue.add(Collections.singletonList(fromCurrency));
+
+        while (!queue.isEmpty()) {
+            List<String> path = queue.poll();
+            String currentCurrency = path.get(path.size() - 1);
+
+            if (currentCurrency.equals(toCurrency)) {
+                return path;
+            }
+
+            visited.add(currentCurrency);
+            Map<String, Double> neighbors = conversionRates.get(currentCurrency);
+            if (neighbors != null) {
+                for (String neighbor : neighbors.keySet()) {
+                    if (!visited.contains(neighbor)) {
+                        List<String> newPath = new ArrayList<>(path);
+                        newPath.add(neighbor);
+                        queue.add(newPath);
+                    }
+                }
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
+    public static void main(String[] args) {
+        CurrencyConverter converter = new CurrencyConverter();
+        converter.addConversionRate("EUR", "GBP", 1.18);
+        converter.addConversionRate("GBP", "USD", 1.35);
+        converter.addConversionRate("USD", "CNY", 6.66);
+        converter.addConversionRate("CNY", "RUB", 4.44);
+        converter.addConversionRate("CNY", "USD", 0.77);
+        converter.addConversionRate("USD", "EUR", 1.12);
+        converter.addConversionRate("EUR", "BRI", 5.18);
+        converter.addConversionRate("BRI", "YEN", 4.99);
+        converter.addConversionRate("YEN", "KRW", 0.11);
+        //converter.addConversionRate("RUB", "CNY", 1.34);
+        converter.addConversionRate("RUB", "KPW", 3.33);
+        converter.addConversionRate("RUB", "THB", 6.66);
+
+        double amount = 1000;
+        String fromCurrency = "EUR";
+        String toCurrency = "USD";
+        double serviceFee = 0.75;
+
+        // Test case 1: Convert 1000 EUR to USD
+        double amount1 = 1000;
+        String fromCurrency1 = "EUR";
+        String toCurrency1 = "USD";
+        double serviceFee1 = 0.75;
+        double convertedAmount1 = converter.convertCurrency(amount1, fromCurrency1, toCurrency1, serviceFee1);
+        if (convertedAmount1 == -1) {
+            System.out.println("Test case 1: Conversion not possible");
+        } else {
+            System.out.println("Test case 1: Converted amount: " + convertedAmount1);
+        }
+
+        // Test case 2: Convert 1000 EUR to CNY
+        double amount2 = 1000;
+        String fromCurrency2 = "EUR";
+        String toCurrency2 = "CNY";
+        double serviceFee2 = 0.75;
+        double convertedAmount2 = converter.convertCurrency(amount2, fromCurrency2, toCurrency2, serviceFee2);
+        if (convertedAmount2 == -1) {
+            System.out.println("Test case 2: Conversion not possible");
+        } else {
+            System.out.println("Test case 2: Converted amount: " + convertedAmount2);
+        }
+
+        // Test case 3: Convert 1000 EUR to RUB
+        double amount3 = 1000;
+        String fromCurrency3 = "EUR";
+        String toCurrency3 = "RUB";
+        double serviceFee3 = 0.75;
+        double convertedAmount3 = converter.convertCurrency(amount3, fromCurrency3, toCurrency3, serviceFee3);
+        if (convertedAmount3 == -1) {
+            System.out.println("Test case 3: Conversion not possible");
+        } else {
+            System.out.println("Test case 3: Converted amount: " + convertedAmount3);
+        }
+
+        // Test case 4: Convert 1000 RUB to USD
+        double amount4 = 1000;
+        String fromCurrency4 = "RUB";
+        String toCurrency4 = "USD";
+        double serviceFee4 = 0.75;
+        double convertedAmount4 = converter.convertCurrency(amount4, fromCurrency4, toCurrency4, serviceFee4);
+        if (convertedAmount4 == -1) {
+            System.out.println("Test case 4: Conversion not possible");
+        } else {
+            System.out.println("Test case 4: Converted amount: " + convertedAmount4);
+        }
+
+        // Test case 5: Convert 1000 CNY to USD
+        double amount5 = 1000;
+        String fromCurrency5 = "CNY";
+        String toCurrency5 = "USD";
+        double serviceFee5 = 0.75;
+        double convertedAmount5 = converter.convertCurrency(amount5, fromCurrency5, toCurrency5, serviceFee5);
+        if (convertedAmount5 == -1) {
+            System.out.println("Test case 5: Conversion not possible");
+        } else {
+            System.out.println("Test case 5: Converted amount: " + convertedAmount5);
+        }
+
+        // Test case 6: Convert 1000 USD to USD
+        double amount6 = 1000;
+        String fromCurrency6 = "USD";
+        String toCurrency6 = "USD";
+        double serviceFee6 = 0.75;
+        double convertedAmount6 = converter.convertCurrency(amount6, fromCurrency6, toCurrency6, serviceFee6);
+        if (convertedAmount6 == -1) {
+            System.out.println("Test case 6: Conversion not possible");
+        } else {
+            System.out.println("Test case 6: Converted amount: " + convertedAmount6);
+        }
+    }
+}
+
+
+
+
