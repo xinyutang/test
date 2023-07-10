@@ -156,5 +156,106 @@ public class CurrencyConverter{
 }
 
 
+下面是一个Java语言实现的面向对象设计算法，用于解决这个问题：
+
+java
+Copy code
+import java.util.*;
+
+class CurrencyConverter {
+    private Map<String, Map<String, Double>> conversionRates;
+
+    public CurrencyConverter() {
+        conversionRates = new HashMap<>();
+    }
+
+    public void addConversionRate(String fromCurrency, String toCurrency, double rate) {
+        conversionRates.computeIfAbsent(fromCurrency, k -> new HashMap<>()).put(toCurrency, rate);
+    }
+
+    public double convertCurrency(double amount, String fromCurrency, String toCurrency, double serviceFee) {
+        if (!conversionRates.containsKey(fromCurrency) || !conversionRates.containsKey(toCurrency))
+            return -1; // Conversion not possible
+
+        List<String> path = findConversionPath(fromCurrency, toCurrency);
+        if (path.isEmpty())
+            return -1; // Conversion not possible
+
+        double totalRate = 1.0;
+        for (int i = 0; i < path.size() - 1; i++) {
+            String currentCurrency = path.get(i);
+            String nextCurrency = path.get(i + 1);
+            double rate = conversionRates.get(currentCurrency).get(nextCurrency);
+            totalRate *= rate;
+        }
+
+        double convertedAmount = amount * totalRate;
+        double serviceFeeAmount = serviceFee * (path.size() - 1);
+        return convertedAmount + serviceFeeAmount;
+    }
+
+    private List<String> findConversionPath(String fromCurrency, String toCurrency) {
+        Set<String> visited = new HashSet<>();
+        Queue<List<String>> queue = new LinkedList<>();
+        queue.add(Collections.singletonList(fromCurrency));
+
+        while (!queue.isEmpty()) {
+            List<String> path = queue.poll();
+            String currentCurrency = path.get(path.size() - 1);
+
+            if (currentCurrency.equals(toCurrency)) {
+                return path;
+            }
+
+            visited.add(currentCurrency);
+            Map<String, Double> neighbors = conversionRates.get(currentCurrency);
+            if (neighbors != null) {
+                for (String neighbor : neighbors.keySet()) {
+                    if (!visited.contains(neighbor)) {
+                        List<String> newPath = new ArrayList<>(path);
+                        newPath.add(neighbor);
+                        queue.add(newPath);
+                    }
+                }
+            }
+        }
+
+        return Collections.emptyList();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        CurrencyConverter converter = new CurrencyConverter();
+        converter.addConversionRate("EUR", "GBP", 1.18);
+        converter.addConversionRate("GBP", "USD", 1.35);
+        converter.addConversionRate("USD", "CNY", 6.66);
+        converter.addConversionRate("CNY", "RUB", 4.44);
+        converter.addConversionRate("CNY", "USD", 0.77);
+        converter.addConversionRate("USD", "EUR", 1.12);
+        converter.addConversionRate("EUR", "BRI", 5.18);
+        converter.addConversionRate("BRI", "YEN", 4.99);
+        converter.addConversionRate("YEN", "KRW", 0.11);
+
+        double amount = 1000;
+        String fromCurrency = "EUR";
+        String toCurrency = "USD";
+        double serviceFee = 0.75;
+
+        double convertedAmount = converter.convertCurrency(amount, fromCurrency, toCurrency, serviceFee);
+        if (convertedAmount == -1) {
+            System.out.println("Conversion not possible");
+        } else {
+            System.out.println("Converted amount: " + convertedAmount);
+        }
+    }
+}
+以上代码创建了一个CurrencyConverter类，它包含了一个conversionRates映射表，用于存储货币之间的转换率。通过addConversionRate方法，可以添加货币之间的转换率信息。convertCurrency方法接收要转换的金额、起始货币、目标货币和服务费，并返回转换后的金额。该方法首先检查是否存在起始货币和目标货币的转换率，如果不存在，则返回-1表示无法转换。接下来，使用广度优先搜索算法在转换率图中查找从起始货币到目标货币的转换路径。如果找到路径，则计算转换后的金额和服务费，并返回结果。如果无法找到路径，则返回-1表示无法转换。
+
+在Main类的main方法中，我们创建了一个CurrencyConverter对象并添加了货币之间的转换率信息。然后，我们调用convertCurrency方法进行货币转换，并输出结果。
+
+请注意，上述代码仅提供了一个基本的框架，你可以根据需要进行扩展和修改。
+
+
 
 
