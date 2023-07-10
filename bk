@@ -251,6 +251,41 @@ public class Main {
     }
 }
 
+//Code Overview:
+
+The CurrencyConverter class provides functionality to convert currencies and calculate the total amount including a service fee. Here's a breakdown of the code with detailed comments:
+
+The class CurrencyConverter is declared with a private member conversionRates, which is a map that stores the conversion rates between currencies.
+
+The constructor initializes the conversionRates map as an empty HashMap.
+
+The addConversionRate method allows adding conversion rates to the conversionRates map. It uses the computeIfAbsent method to ensure that the maps for fromCurrency and toCurrency exist before adding the rate.
+
+The convertCurrency method takes the amount, fromCurrency, toCurrency, and serviceFee as input. It checks if conversion rates for the specified currencies exist in the conversionRates map. If not, itreturns -1, indicating that the conversion is not possible.
+
+The findConversionPath method is a helper method used to find a conversion path from the fromCurrency to the toCurrency. It uses a breadth-first search (BFS) approach to explore the possible paths. It maintains a set of visited currencies to avoid cycles and uses a queue to perform the BFS traversal.
+
+Inside the convertCurrency method, it calls the findConversionPath method to get the conversion path. If the path is empty, it means that no conversion path exists, and -1 is returned.
+
+The method then calculates the total conversion rate by multiplying the conversion rates along the path. It iterates over the path, retrieves the conversion rate between each currency pair, and multiplies them to get the total rate.
+
+The converted amount is calculated by multiplying the amount by the total conversion rate. The service fee amount is calculated by multiplying the serviceFee by the number of currency conversions in the path.
+
+Finally, the method returns the total amount, which is the sum of the converted amount and the service fee amount.
+
+In the main method, an instance of CurrencyConverter is created, and conversion rates between currencies are added using the addConversionRate method.
+
+Test cases are provided to convert various amounts between currencies. The convertCurrency method is called with the respective input parameters, and the result is checked. If the result is -1, it means that the conversion is not possible, and the corresponding message is printed. Otherwise, the converted amount is printed.
+
+This code allows for adding conversion rates between currencies and performing currency conversions, considering the conversion rates and service fees. The BFS-based approach finds the conversion path efficiently, ensuring the conversion is possible and providing the converted amount or indicating that the conversion is not possible.
+//The time complexity of this solution depends on the number of conversion rates and the length of the conversion path. In the worst case, when all conversion rates and currencies are interconnected, the time complexity is O(V + E), where V is the number of currencies and E is the number of conversion rates. The BFS algorithm contributes to this complexity.
+
+The space complexity of the solution is O(V + E), where V is the number of currencies and E is the number of conversion rates. The space is mainly used for the conversionRates map and the visited set.
+
+As for potential optimizations, the code could benefit from caching previously found conversion paths to avoid redundant calculations. Additionally, if the conversion rates are static and do not change frequently, precomputing the conversion paths between all pairs of currencies could improve the overall performance.
+
+Overall, this code provides a functional currency converter using a BFS approach to find conversion paths, and it has a moderate time and space complexity.
+
 //这是 CurrencyConverter 类的定义。它包含一个名为 conversionRates 的映射表，用于存储货币之间的转换率。addConversionRate 方法用于添加货币转换率到映射表中。
 //convertCurrency 方法用于将给定货币金额从一种货币转换为另一种货币，并计算服务费。首先，它检查映射表中是否存在起始货币和目标货币的转换率。如果不存在，则返回 -1，表示无法进行转换。
 //接下来，它调用 findConversionPath 方法来查找从起始货币到目标货币的转换路径。如果找不到路径，则返回 -1，表示无法进行转换。
