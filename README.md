@@ -1,3 +1,5 @@
+https://dps.artifactory.cec.lab.emc.com/ui/native/dps-maven-public/com/microsoft/microsoft-jdk/
+
 import java.util.HashSet;
 import java.util.Set;
 
